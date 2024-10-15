@@ -18,7 +18,7 @@ function Navbar() {
           <div className='relative'>
             <button
               onClick={toggleDropdown}
-              className='bg-black text-white px-4 py-2 rounded-md'>
+              className='bg-white text-black px-4 py-2 rounded-md'>
              select
             </button>
 

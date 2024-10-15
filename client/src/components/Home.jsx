@@ -82,6 +82,16 @@ const Home = () => {
                   alt="Polygon Logo"
                   className="h-12 w-auto"
                 />
+                <img
+                  src="https://cryptologos.cc/logos/sui-sui-logo.svg?v=024"  // Sui Logo
+                  alt="Sui Logo"
+                  className="h-12 w-auto"
+                />
+                <img
+                  src="https://cryptologos.cc/logos/solana-sol-logo.svg?v=024"  // Solana Logo
+                  alt="Solana Logo"
+                  className="h-12 w-auto"
+                />
               </motion.div>
             </div>
           </div>
@@ -95,7 +105,7 @@ const Home = () => {
           >
             {/* Infinite Y-axis up and down movement */}
             <motion.img
-  src="https://pbs.twimg.com/media/GZEfi5HacAEYukH.jpg"
+              src="https://academy-public.coinmarketcap.com/srd-optimized-uploads/035fd00794a54da6a01e8653343e86d7.jpeg"
               alt="Aligned Layer Image"
               className="rounded-lg shadow-lg h-[200px]"
               animate={{ y: [-10, 10, -10] }}  // Moves 10px up and down
