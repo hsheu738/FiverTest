@@ -9,16 +9,16 @@ function Navbar() {
 
     return (
       <nav className=''>
-        <div className='flex flex-row mx-auto px-[40px] py-[25px] justify-between items-center mt-[0px] bg-white'>
-          <div className='font-bold text-2xl text-green-600'>
-            <a href='/'>wormhole</a>
+        <div className='flex flex-row mx-auto px-[40px] py-[25px] justify-between items-center mt-[0px] bg-[#1F1B30]'>
+          <div className='font-bold text-2xl text-white'>
+            <a href='/'>Wormhole</a>
           </div>
 
           {/* Dropdown button */}
           <div className='relative'>
             <button
               onClick={toggleDropdown}
-              className='bg-green-500 text-white px-4 py-2 rounded-md'>
+              className='bg-black text-white px-4 py-2 rounded-md'>
              select
             </button>
 

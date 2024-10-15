@@ -9,18 +9,18 @@ const Home = () => {
           
           {/* Left Section - Text and Buttons */}
           <div className="md:w-[478px]">
-            <div className="tag text-black mt-[100px]">Version 1.0 is here</div>
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tighter bg-gradient-to-b from-green-300 via-green-400 to-green-600 text-transparent bg-clip-text mt-6">
+            <div className="tag text-white mt-[100px]">Version 1.0 is here</div>
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tighter bg-gradient-to-b from-gray-200 via-green-200 to-green-300 text-transparent bg-clip-text mt-6">
               Wormhole X Cricle
             </h1>
-            <p className="text-xl text-black tracking-tight mt-6">
+            <p className="text-xl text-white tracking-tight mt-6">
               Simplifying the tracking
             </p>
             <div className="flex gap-3 items-center mt-[30px]">
               <a href="">
                 <button className="btn btn-primary px-5 py-3 bg-black text-white rounded-md">Get Started</button>
               </a>
-              <button className="btn btn-text gap-1 px-5 py-3 bg-transparent text-black border-green-500 border rounded-md">
+              <button className="btn btn-text gap-1 px-5 py-3 bg-transparent text-white border-white border rounded-md">
                 <span>Learn more</span>
                 <svg
                   className="h-5 w-5 ml-2"
