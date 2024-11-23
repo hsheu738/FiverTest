@@ -1,125 +1,92 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useState } from 'react';
 
 const Home = () => {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const isScrolled = window.scrollY > 20;
+      if (isScrolled !== scrolled) {
+        setScrolled(isScrolled);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [scrolled]);
+
   return (
-    <section className="pt-0 pb-20 md:pb-10 bg-gradient-to-b from-[#1F1B30] via-[#3A2A52] to-[#4A3A78] overflow-x-clip h-screen w-screen"> 
-      <div className="container mx-auto px-4">
-        <div className="md:flex items-center justify-between">
-          
-          {/* Left Section - Text and Buttons */}
-          <div className="md:w-[478px]">
-            <div className="tag text-white mt-[100px]">Version 1.0 is here</div>
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tighter bg-gradient-to-b from-gray-200 via-green-200 to-green-300 text-transparent bg-clip-text mt-6">
-              Wormhole X Cricle
-            </h1>
-            <p className="text-xl text-white tracking-tight mt-6">
-              Simplifying the tracking
-            </p>
-            <div className="flex gap-3 items-center mt-[30px]">
-              <a href="">
-                <button className="btn btn-primary px-5 py-3 bg-black text-white rounded-md">Get Started</button>
-              </a>
-              <button className="btn btn-text gap-1 px-5 py-3 bg-transparent text-white border-white border rounded-md">
-                <span>Learn more</span>
-                <svg
-                  className="h-5 w-5 ml-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M17 8l4 4m0 0l-4 4m4-4H3"
-                  ></path>
-                </svg>
-              </button>
-            </div>
-
-            {/* Floating Logos */}
-            <div className="relative mt-10">
-              <motion.div
-                className="flex gap-10"
-                initial={{ x: '-100%' }}
-                animate={{ x: '100%' }}
-                transition={{
-                  repeat: Infinity,
-                  repeatType: 'loop',
-                  duration: 12,  // Adjust speed here
-                  ease: 'linear'
-                }}
-              >
-                <img
-                  src="https://www.optimism.io/optimism.svg"
-                  alt="Optimism Logo"
-                  className="h-12 w-36"
-                />
-                <img
-                  src="https://www.base.org/_next/static/media/logo.f6fdedfc.svg"
-                  alt="Base Logo"
-                  className="h-12 w-auto"
-                />
-                <img
-                  src="https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=024"
-                  alt="Ethereum Logo"
-                  className="h-12 w-auto"
-                />
-                <img
-                  src="https://cryptologos.cc/logos/aptos-apt-logo.svg?v=024"
-                  alt="Aptos Logo"
-                  className="h-12 w-auto"
-                />
-                <img
-                  src="https://cryptologos.cc/logos/arbitrum-arb-logo.svg?v=024"
-                  alt="Arbitrum Logo"
-                  className="h-12 w-auto"
-                />
-                <img
-                  src="https://cryptologos.cc/logos/polygon-matic-logo.svg?v=024"
-                  alt="Polygon Logo"
-                  className="h-12 w-auto"
-                />
-                <img
-                  src="https://cryptologos.cc/logos/sui-sui-logo.svg?v=024"  // Sui Logo
-                  alt="Sui Logo"
-                  className="h-12 w-auto"
-                />
-                <img
-                  src="https://cryptologos.cc/logos/solana-sol-logo.svg?v=024"  // Solana Logo
-                  alt="Solana Logo"
-                  className="h-12 w-auto"
-                />
-              </motion.div>
-            </div>
-          </div>
-
-          {/* Right Section - Animated Image */}
-          <motion.div
-            className="md:w-[478px] md:mt-[30px]"
-            initial={{ x: 300, opacity: 0 }}  // Start off-screen to the right
-            animate={{ x: 0, opacity: 1 }}    // Slide in from the right
-            transition={{ delay: 1.2, duration: 0.8, ease: 'easeOut' }} // 2-second delay for initial animation
-          >
-            {/* Infinite Y-axis up and down movement */}
-            <motion.img
-              src="https://academy-public.coinmarketcap.com/srd-optimized-uploads/035fd00794a54da6a01e8653343e86d7.jpeg"
-              alt="Aligned Layer Image"
-              className="rounded-lg shadow-lg h-[200px]"
-              animate={{ y: [-10, 10, -10] }}  // Moves 10px up and down
-              transition={{ 
-                repeat: Infinity,               // Infinite loop
-                duration: 3,                    // 2 seconds for the full loop
-                ease: 'easeInOut',              // Smooth easing
-              }}
-            />
-          </motion.div>
-
+    <div className="app-container">
+      <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
+        <div className="logo-container">
+          <h2 className="logo-text">InvoiceFlow</h2>
         </div>
-      </div>
-    </section>
+        <div className="nav-links">
+          <a href="#features" className="nav-link fade-in fade-in-delay-1">Features</a>
+          <a href="#solutions" className="nav-link fade-in fade-in-delay-2">Solutions</a>
+          <a href="#developers" className="nav-link fade-in fade-in-delay-2">Developers</a>
+          <a href="#docs" className="nav-link fade-in fade-in-delay-2">Docs</a>
+          <a href="#login" className="cta-button fade-in fade-in-delay-3">Get Started</a>
+        </div>
+      </nav>
+
+      <section className="hero-section">
+        <h1 className="hero-title">
+          Financial Infrastructure<br />For Modern Business
+        </h1>
+        <p className="hero-subtitle">
+          Build powerful invoicing solutions with our developer-friendly platform
+        </p>
+        <a href="#demo" className="cta-button hero-cta">Book a Demo</a>
+      </section>
+
+      <section className="stats-section">
+        {[
+          { number: '$800M+', label: 'Processed Volume' },
+          { number: '20,000+', label: 'Monthly Transactions' },
+          { number: '2,000+', label: 'Active Companies' }
+        ].map((stat, index) => (
+          <div key={index} className={`stat-card fade-in fade-in-delay-${index + 1}`}>
+            <div className="stat-number">{stat.number}</div>
+            <div className="stat-label">{stat.label}</div>
+          </div>
+        ))}
+      </section>
+
+      <section className="features-grid">
+        {[
+          {
+            title: 'Smart Invoicing',
+            description: 'Create and manage invoices with automated payment tracking'
+          },
+          {
+            title: 'Payment Integration',
+            description: 'Accept payments in multiple currencies with built-in processing'
+          },
+          {
+            title: 'Analytics Dashboard',
+            description: 'Get real-time insights into your invoicing performance'
+          },
+          {
+            title: 'API-First',
+            description: 'Powerful APIs and SDKs for seamless integration'
+          },
+          {
+            title: 'Compliance Ready',
+            description: 'Built-in compliance features for major regulations'
+          },
+          {
+            title: 'Automated Workflows',
+            description: 'Streamline processes with customizable automation'
+          }
+        ].map((feature, index) => (
+          <div key={index} className={`feature-card fade-in fade-in-delay-${index % 3 + 1}`}>
+            <h3 className="feature-title">{feature.title}</h3>
+            <p className="feature-description">{feature.description}</p>
+          </div>
+        ))}
+      </section>
+    </div>
   );
 };
 
