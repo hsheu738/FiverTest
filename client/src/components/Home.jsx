@@ -1,29 +1,30 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { TracingBeam } from './ui/tracing-beam';
-import { TypewriterEffect } from "./ui/typewriter-effect";
+import { TypewriterEffect } from './ui/typewriter-effect';
+import Footer from './Footer';
 
 const Home = () => {
   const words = [
     {
       text: "Create",
-      className: "text-emerald-700 dark:text-emerald-500"
+      className: "text-2xl md:text-4xl text-emerald-700 dark:text-emerald-500"
     },
     {
       text: "professional",
-      className: "text-emerald-700 dark:text-emerald-500"
+      className: "text-2xl md:text-4xl text-emerald-700 dark:text-emerald-500"
     },
     {
       text: "invoices",
-      className: "text-emerald-700 dark:text-emerald-500"
+      className: "text-2xl md:text-4xl text-emerald-700 dark:text-emerald-500"
     },
     {
       text: "with",
-      className: "text-emerald-700 dark:text-emerald-500"
+      className: "text-2xl md:text-4xl text-emerald-700 dark:text-emerald-500"
     },
     {
       text: "InvoiceFlow.",
-      className: "text-teal-700 dark:text-teal-500 font-bold"
+      className: "text-2xl md:text-4xl text-teal-700 dark:text-teal-500 font-bold"
     }
   ];
 
@@ -39,7 +40,7 @@ const Home = () => {
               transition={{ duration: 0.8 }}
               className="text-center"
             >
-              <div className="mx-auto mb-10">
+              <div className="mx-auto mb-10 max-w-4xl px-4">
                 <TypewriterEffect words={words} />
               </div>
               
@@ -47,7 +48,7 @@ const Home = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5, duration: 0.8 }}
-                className="text-xl text-gray-700 mb-12 max-w-3xl mx-auto font-medium"
+                className="text-lg md:text-xl text-gray-700 mb-12 max-w-2xl mx-auto font-medium px-4"
               >
                 Streamline your billing process with automated invoicing, payment tracking, and financial insights.
               </motion.p>
@@ -221,7 +222,7 @@ const Home = () => {
               whileInView={{ opacity: 1 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
-              className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20"
+              className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20 mb-20"
             >
               {stats.map((stat, index) => (
                 <motion.div
@@ -244,6 +245,9 @@ const Home = () => {
                 </motion.div>
               ))}
             </motion.div>
+
+            {/* Add Footer here */}
+            <Footer />
           </div>
         </section>
       </div>
