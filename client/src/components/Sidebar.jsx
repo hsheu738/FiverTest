@@ -70,14 +70,14 @@ const Sidebar = () => {
     >
       <div className="p-6 border-b">
         <a href="/" className="flex items-center gap-2">
-          <svg className="w-8 h-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-8 h-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
           </svg>
-          <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-            StreamBill
+          <span className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+            InvoiceFlow
           </span>
         </a>
-        <div className="mt-2 text-sm text-gray-500">testnet</div>
+        <div className="mt-2 text-sm text-gray-600">testnet</div>
       </div>
       
       <nav className="p-4 space-y-2 overflow-y-auto max-h-[calc(100vh-10rem)]">
@@ -88,14 +88,16 @@ const Sidebar = () => {
             whileHover={{ x: 4 }}
             className={`flex items-center gap-3 p-3 rounded-lg transition-colors ${
               item.active 
-                ? 'bg-blue-50 text-blue-600' 
-                : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600'
+                ? 'bg-emerald-50 text-emerald-600' 
+                : 'text-gray-800 hover:bg-emerald-50 hover:text-emerald-600'
             }`}
           >
-            {item.icon}
+            <div className={item.active ? 'text-emerald-600' : 'text-gray-800'}>
+              {item.icon}
+            </div>
             <span>{item.name}</span>
             {item.soon && (
-              <span className="ml-auto text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded-full">
+              <span className="ml-auto text-xs px-2 py-1 bg-gray-100 text-gray-800 rounded-full">
                 Soon
               </span>
             )}
