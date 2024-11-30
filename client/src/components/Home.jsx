@@ -30,6 +30,86 @@ const Home = () => {
 
   return (
     <TracingBeam className="px-6">
+      <div className="fixed left-0 top-0 bottom-0 w-24 pointer-events-none">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+          className="absolute inset-0"
+        >
+          <div className="absolute top-1/4 left-4 w-12 h-12 bg-emerald-500/10 rounded-full blur-xl animate-pulse" />
+          <div className="absolute top-1/3 left-8 w-16 h-16 bg-teal-500/10 rounded-full blur-xl animate-pulse delay-300" />
+          <div className="absolute top-1/2 left-2 w-20 h-20 bg-emerald-400/10 rounded-full blur-xl animate-pulse delay-500" />
+          <motion.div
+            animate={{
+              y: [0, 100, 0],
+            }}
+            transition={{
+              duration: 20,
+              repeat: Infinity,
+              ease: "linear"
+            }}
+            className="absolute top-0 left-10 w-2 h-32 bg-gradient-to-b from-emerald-500/0 via-emerald-500/20 to-emerald-500/0 rounded-full"
+          />
+        </motion.div>
+      </div>
+
+      <div className="fixed right-0 top-0 bottom-0 w-24 pointer-events-none">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+          className="absolute inset-0"
+        >
+          <div className="absolute top-2/3 right-4 w-12 h-12 bg-emerald-500/10 rounded-full blur-xl animate-pulse" />
+          <div className="absolute top-1/4 right-8 w-16 h-16 bg-teal-500/10 rounded-full blur-xl animate-pulse delay-300" />
+          <div className="absolute top-1/2 right-2 w-20 h-20 bg-emerald-400/10 rounded-full blur-xl animate-pulse delay-500" />
+          <motion.div
+            animate={{
+              y: [100, 0, 100],
+            }}
+            transition={{
+              duration: 20,
+              repeat: Infinity,
+              ease: "linear"
+            }}
+            className="absolute top-0 right-10 w-2 h-32 bg-gradient-to-b from-emerald-500/0 via-emerald-500/20 to-emerald-500/0 rounded-full"
+          />
+        </motion.div>
+      </div>
+
+      <motion.div
+        animate={{
+          rotate: [0, 360],
+        }}
+        transition={{
+          duration: 20,
+          repeat: Infinity,
+          ease: "linear"
+        }}
+        className="fixed left-12 top-1/4 w-32 h-32 pointer-events-none"
+      >
+        <div className="absolute inset-0 border-2 border-emerald-500/20 rounded-full" />
+        <div className="absolute inset-2 border-2 border-emerald-500/20 rounded-full" />
+        <div className="absolute inset-4 border-2 border-emerald-500/20 rounded-full" />
+      </motion.div>
+
+      <motion.div
+        animate={{
+          rotate: [360, 0],
+        }}
+        transition={{
+          duration: 25,
+          repeat: Infinity,
+          ease: "linear"
+        }}
+        className="fixed right-12 top-2/3 w-40 h-40 pointer-events-none"
+      >
+        <div className="absolute inset-0 border-2 border-teal-500/20 rounded-full" />
+        <div className="absolute inset-2 border-2 border-teal-500/20 rounded-full" />
+        <div className="absolute inset-4 border-2 border-teal-500/20 rounded-full" />
+      </motion.div>
+
       <div className="min-h-screen bg-gradient-to-b from-emerald-50 via-white to-emerald-50">
         {/* Hero Section */}
         <section className="pt-32 pb-20">
