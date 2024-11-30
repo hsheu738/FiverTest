@@ -11,7 +11,7 @@ const Sidebar = () => {
   const menuItems = [
     {
       name: 'Dashboard',
-      path: '#',
+      path: '/dashboard',
       active: true,
       icon: (
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

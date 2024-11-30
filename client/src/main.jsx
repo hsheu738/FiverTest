@@ -8,6 +8,7 @@ import Home from './components/Home.jsx'
 import Navbar from './components/Navbar.jsx'
 import Sidebar from './components/Sidebar.jsx'
 import CreateInvoice from './components/CreateInvoice.jsx'
+import Dashboard from './components/Dashboard.jsx'
 
 import '@rainbow-me/rainbowkit/styles.css';
 
@@ -56,6 +57,7 @@ const router = createBrowserRouter(
       <Route path='/' element={<Home/>}/>
       <Route path='/sidebar' element={<Sidebar/>}/>
       <Route path='/create-invoice' element={<CreateInvoice/>}/>
+      <Route path='/dashboard' element={<Dashboard/>}/>
     </Route>
   )
 );
