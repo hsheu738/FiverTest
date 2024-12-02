@@ -67,8 +67,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider>
-          <Navbar/>
-          <RouterProvider router={router}/>
+          <App />
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
