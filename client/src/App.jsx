@@ -5,6 +5,7 @@ import Dashboard from './components/Dashboard';
 import SidebarPage from './components/SidebarPage';
 import Home from './components/Home';
 import Sidebar from './components/Sidebar';
+import StatsPage from './components/StatsPage';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route path="/sidebar" element={<SidebarPage />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/create-invoice" element={<CreateInvoice />} />
+            <Route path="/stats" element={<StatsPage />} />
           </Routes>
         </main>
       </div>
