@@ -2,65 +2,21 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
-import {createBrowserRouter,RouterProvider,createRoutesFromElements} from 'react-router-dom'
-import { Route } from 'react-router-dom'
-import Home from './components/Home.jsx'
-import Navbar from './components/Navbar.jsx'
-import Sidebar from './components/Sidebar.jsx'
-import CreateInvoice from './components/CreateInvoice.jsx'
-import Dashboard from './components/Dashboard.jsx'
-
+import { WagmiProvider } from 'wagmi';
+import { bscTestnet } from 'wagmi/chains';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { getDefaultConfig, RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import '@rainbow-me/rainbowkit/styles.css';
 
-import {
-  getDefaultConfig,
-  RainbowKitProvider,
-} from '@rainbow-me/rainbowkit';
-import { WagmiProvider } from 'wagmi';
-import {
-  QueryClientProvider,
-  QueryClient,
-} from "@tanstack/react-query";
-
-// Define OpenCampus Codex Testnet with updated configuration
-const openCampusCodex = {
-  id: 656476, // Updated Chain ID (0xa045c)
-  name: 'OpenCampus Codex',
-  network: 'opencampus-codex',
-  nativeCurrency: {
-    decimals: 18,
-    name: 'EDU',
-    symbol: 'EDU',
-  },
-  rpcUrls: {
-    public: { http: ['https://rpc.open-campus-codex.gelato.digital'] },
-    default: { http: ['https://rpc.open-campus-codex.gelato.digital'] },
-  },
-  blockExplorers: {
-    default: { name: 'Explorer', url: 'https://testnet.explorer.opencampus.io' },
-  },
-  testnet: true
-};
-
+// Configure for BSC Testnet
 const config = getDefaultConfig({
   appName: 'InvoiceFlow',
-  projectId: 'e7fa7d19fd057ecd9403a0e89bd62b8b',
-  chains: [openCampusCodex],
+  projectId: 'e7fa7d19fd057ecd9403a0e89bd62b8b', // Your project ID
+  chains: [bscTestnet],
   ssr: false
 });
 
 const queryClient = new QueryClient();
-
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route>
-      <Route path='/' element={<Home/>}/>
-      <Route path='/sidebar' element={<Sidebar/>}/>
-      <Route path='/create-invoice' element={<CreateInvoice/>}/>
-      <Route path='/dashboard' element={<Dashboard/>}/>
-    </Route>
-  )
-);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
