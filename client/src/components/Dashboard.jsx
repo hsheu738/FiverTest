@@ -6,104 +6,97 @@ import { publicClient } from "./config";
 
 const Dashboard = () => {
   const { address } = useAccount();
-  const [invoices, setInvoices] = useState([]);
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // useEffect(() => {
-  //   const getData = async () => {
-  //     if (!address) {
-  //       console.error("Wallet not connected");
-  //       setLoading(false);
-  //       return;
-  //     }
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        setLoading(true);
+        const contractData = await publicClient.readContract({
+          address: "0xF426eBf74b4546d8d81fA2F0B4B6929dD9437114",
+          abi: wagmiAbi,
+          functionName: "getAllInvoices",
+          args: [],
+        });
+        console.log("Contract Data:", contractData);
+        setData(contractData);
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  //     try {
-  //       console.log("Fetching invoices for address:", address);
+    getData();
+  }, []);
 
-  //       const contractData = await publicClient.readContract({
-  //         address: "0xF426eBf74b4546d8d81fA2F0B4B6929dD9437114",
-  //         abi: wagmiAbi,
-  //         functionName: "getAllInvoices",
-  //         args: [],
-  //       });
-
-  //       console.log("Contract data fetched:", contractData);
-
-  //       // Validate data structure
-  //       if (
-  //         !contractData ||
-  //         contractData.some((array) => array.length !== contractData[0].length)
-  //       ) {
-  //         console.error("Mismatched array lengths in contract data");
-  //         setInvoices([]);
-  //         return;
-  //       }
-
-  //       // Transform data into invoice objects
-  //       const transformedInvoices = contractData[0]
-  //         .map((_, index) => ({
-  //           invoiceId: contractData[0][index].toString(),
-  //           sender: contractData[1][index],
-  //           recipient: contractData[2][index],
-  //           amount: contractData[3][index].toString(),
-  //           status: ["Pending", "Paid"][contractData[4][index]], // Assuming 0 = Pending, 1 = Paid
-  //           timestamp: new Date(contractData[5][index] * 1000).toLocaleString(),
-  //           isActive: contractData[6][index],
-  //         }))
-  //         .filter((invoice) =>
-  //           // Optionally filter by address
-  //           invoice.isActive &&
-  //           (invoice.sender.toLowerCase() === address.toLowerCase() ||
-  //             invoice.recipient.toLowerCase() === address.toLowerCase())
-  //         );
-
-  //       console.log("Transformed invoices:", transformedInvoices);
-  //       setInvoices(transformedInvoices);
-  //     } catch (error) {
-  //       console.error("Error fetching invoices:", error);
-  //       setInvoices([]);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   getData();
-  // }, [address]);
-
-  const getStatusColor = (status) => {
-    switch (status.toLowerCase()) {
-      case "paid":
-        return "bg-green-100 text-green-800";
-      case "pending":
-        return "bg-yellow-100 text-yellow-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
-  
-  function InvoiceRows({sender, recipient, amount, status}){
-    return(
-      <div>
-      <p className="text-tiny uppercase font-bold text-purple-400">sender:{sender}</p>
-      <p className="text-tiny uppercase font-bold text-purple-400 mt-[10px]">recipient:{recipient}</p>
-      <h4 className="font-semibold text-lg">amount:{amount}</h4>
-      <h4 className="font-semibold text-lg">status:{status}</h4>
+  function InvoiceRows({ sender, recipient, amount, status, timestamps }) {
+    return (
+      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Date
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Sender
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Recipient
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Amount
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Status
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {Array.isArray(sender) && sender.length > 0 ? (
+                sender.map((s, index) => (
+                  <tr key={index} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {new Date(Number(timestamps[index]) * 1000).toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {s?.slice(0, 6)}...{s?.slice(-4)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {recipient[index]?.slice(0, 6)}...{recipient[index]?.slice(-4)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {amount[index]?.toString()}$
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        status[index] === 0
+                          ? 'bg-yellow-100 text-yellow-800'
+                          : 'bg-green-100 text-green-800'
+                      }`}>
+                        {status[index] === 0 ? 'Pending' : 'Paid'}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="5" className="px-6 py-4 text-center text-sm text-gray-500">
+                    No invoices found
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
-    )
+    );
   }
-
-  const [data, setData] = useState();
-
-  useEffect(()=>{
-    const getData = async()=>{
-      const contractData = await publicClient.readContract({address: "0xF426eBf74b4546d8d81fA2F0B4B6929dD9437114", abi: wagmiAbi, functionName: "getAllInvoices", args: []});
-      console.log(contractData)
-      setData(contractData);
-    }
-    if(!data){
-      getData()
-    }
-  },[data])
 
   return (
     <div className="min-h-screen bg-gray-50 pt-16 px-4">
@@ -133,12 +126,69 @@ const Dashboard = () => {
             </a>
           </motion.button>
         </div>
-  
 
-        {data && 
-        <InvoiceRows sender={data[0]} recipient={data[1]} amount={data[2]} status={data[3]}/>
-      }
-       
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div>
+          </div>
+        ) : error ? (
+          <div className="text-center py-12 bg-white rounded-lg shadow-md">
+            <div className="text-red-600 mb-4">Error: {error}</div>
+            <button 
+              onClick={() => window.location.reload()}
+              className="text-emerald-600 hover:text-emerald-700"
+            >
+              Try Again
+            </button>
+          </div>
+        ) : data ? (
+          <InvoiceRows 
+            sender={data[1]} 
+            recipient={data[2]} 
+            amount={data[3]} 
+            status={data[4]}
+            timestamps={data[5]}
+          />
+        ) : (
+          <div className="text-center py-12 bg-white rounded-lg shadow-md">
+            <svg
+              className="mx-auto h-12 w-12 text-gray-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            </svg>
+            <h3 className="mt-2 text-sm font-medium text-gray-900">No invoices found</h3>
+            <p className="mt-1 text-sm text-gray-500">Get started by creating a new invoice.</p>
+            <div className="mt-6">
+              <a
+                href="/create-invoice"
+                className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700"
+              >
+                <svg
+                  className="-ml-1 mr-2 h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 4v16m8-8H4"
+                  />
+                </svg>
+                Create Invoice
+              </a>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
