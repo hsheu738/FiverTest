@@ -141,12 +141,6 @@ const CreateInvoice = () => {
               className="bg-white p-6 rounded-xl shadow-md"
             >
               <h2 className="text-xl font-semibold mb-4 text-emerald-700">Your Information</h2>
-              <button
-                onClick={connectWallet}
-                className="w-full mb-4 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
-              >
-                Connect Wallet
-              </button>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <input
                   type="text"
