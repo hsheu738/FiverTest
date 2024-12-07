@@ -1,7 +1,47 @@
-import React from 'react';
+import React , {useState , useEffect} from 'react';
 import { motion } from 'framer-motion';
+import { wagmiAbi } from './abi';
+import { useAccount } from 'wagmi';
+import { useReadContract } from 'wagmi';
+import { readContract } from '@wagmi/core';
+import { publicClient } from './config';
+import { bscTestnet } from 'viem/chains';
+import { getDefaultConfig } from '@rainbow-me/rainbowkit';
+
+
+function InvoiceCard({clientAddress , price , status}){
+   return (
+    <div>
+      <h1>{clientAddress}</h1>
+      <h1>{price}</h1>
+      <h1>{status}</h1>
+    </div>
+   )  
+}
 
 const Dashboard = () => {
+
+  const {address} = useAccount();
+
+  const config = getDefaultConfig({
+    appName: 'My RainbowKit App',
+    projectId: 'e7fa7d19fd057ecd9403a0e89bd62b8b',
+    chains: [bscTestnet],
+    ssr: false
+  });
+
+  const [data, setData] = useState();
+
+  useEffect(()=>{
+    const getData = async()=>{
+      const contractData = await publicClient.readContract({address: "0xF426eBf74b4546d8d81fA2F0B4B6929dD9437114",  abi: wagmiAbi, functionName: "getAllInvoices", args: []});
+      console.log(contractData)
+      setData(contractData);
+    }
+    if(!data){
+      getData()
+    }
+  },[data])
   // Sample data - replace with actual data from your backend
   const invoices = [
     {
