@@ -1,9 +1,59 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import {publicClient, walletClient} from './config'
+import { wagmiAbi } from './abi';
+import {useAccount} from 'wagmi'
 
 const CreateInvoice = () => {
+
+  const {address} = useAccount()
+
+ const [formData, setFormData] = useState({
+   recipient:'',
+   amount:'',
+ })
+
+ const [loading, setLoading] = useState(false);
+ const [error, setError] = useState('');
+ const [success, setSuccess] = useState('');
+
+ const handleChange = (e) => {
+  const {recipient, value} = e.target
+  setFormData({
+    ...formData,
+    recipient:[value]
+  })
+ }
+
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  setError('');
+  setSuccess('');
+
+  try{
+   
+    const { recipient, amount} = formData;
+
+    console.log(recipient, amount);
+
+    const {request} = await publicClient.simulateContract({
+      address: '0xF426eBf74b4546d8d81fA2F0B4B6929dD9437114',
+      abi: wagmiAbi,
+      functionName: 'createInvoice',
+      args: [ recipient, amount],
+      account:address
+    })  
+
+  } catch (err) {
+    console.error('Error submitting form:', err);
+    setError('Failed to submit the form. Please try again.');
+  } finally {
+    setLoading(false);
+  }
+ }
+
   const [sellerInfo, setSellerInfo] = useState({
-    walletAddress: '',
     firstName: '',
     lastName: '',
     companyName: '',
@@ -141,6 +191,34 @@ const CreateInvoice = () => {
               className="bg-white p-6 rounded-xl shadow-md"
             >
               <h2 className="text-xl font-semibold mb-4 text-emerald-700">Your Information</h2>
+              
+              {/* Connected Wallet Address Display */}
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Your Wallet Address
+                </label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={address || 'Please connect your wallet'}
+                    disabled
+                    className="input-field bg-gray-50 cursor-not-allowed flex-1"
+                  />
+                  {address && (
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(address);
+                        alert('Address copied to clipboard!');
+                      }}
+                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                      title="Copy address"
+                    >
+                      📋
+                    </button>
+                  )}
+                </div>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <input
                   type="text"

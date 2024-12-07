@@ -34,6 +34,13 @@ const Dashboard = () => {
   }, []);
 
   function InvoiceRows({ sender, recipient, amount, status, timestamps }) {
+    const copyToClipboard = (text) => {
+      navigator.clipboard.writeText(text).then(() => {
+        // Optional: Add a toast notification here
+        alert('Address copied to clipboard!');
+      });
+    };
+
     return (
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <div className="overflow-x-auto">
@@ -65,10 +72,28 @@ const Dashboard = () => {
                       {new Date(Number(timestamps[index]) * 1000).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {s?.slice(0, 6)}...{s?.slice(-4)}
+                      <div className="flex items-center gap-2">
+                        <span>{s?.slice(0, 6)}...{s?.slice(-4)}</span>
+                        <button
+                          onClick={() => copyToClipboard(s)}
+                          className="hover:bg-gray-100 p-1 rounded-full transition-colors"
+                          title="Copy address"
+                        >
+                          📋
+                        </button>
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {recipient[index]?.slice(0, 6)}...{recipient[index]?.slice(-4)}
+                      <div className="flex items-center gap-2">
+                        <span>{recipient[index]?.slice(0, 6)}...{recipient[index]?.slice(-4)}</span>
+                        <button
+                          onClick={() => copyToClipboard(recipient[index])}
+                          className="hover:bg-gray-100 p-1 rounded-full transition-colors"
+                          title="Copy address"
+                        >
+                          📋
+                        </button>
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {amount[index]?.toString()}$
