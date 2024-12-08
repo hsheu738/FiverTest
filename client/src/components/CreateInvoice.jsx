@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import {publicClient, walletClient} from './config'
 import { wagmiAbi } from './abi';
 import {useAccount} from 'wagmi'
+import html2pdf from 'html2pdf.js';
 
 const CreateInvoice = () => {
 
@@ -44,6 +45,11 @@ const CreateInvoice = () => {
       args: [ recipient, amount],
       account:address
     })  
+
+    const hash = await walletClient.writeContract(request);
+    await publicClient.waitForTransactionReceipt({hash});
+
+    setSuccess('Form submitted successfully!');
 
   } catch (err) {
     console.error('Error submitting form:', err);
@@ -172,6 +178,57 @@ const CreateInvoice = () => {
   const connectWallet = async () => {
     // Implement wallet connection logic here
     alert('Wallet connection will be implemented');
+  };
+
+  const handleDownloadPDF = () => {
+    const element = document.getElementById('invoice-preview');
+    const opt = {
+      margin: 1,
+      filename: `invoice-${Date.now()}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opt).from(element).save();
+  };
+
+  const handleEmailSend = () => {
+    try {
+      const subject = `Invoice from ${sellerInfo.firstName} ${sellerInfo.lastName}`;
+      const body = `
+Dear ${clientInfo.firstName} ${clientInfo.lastName},
+
+Please find attached the invoice for the amount of $${calculateTotal()}.
+
+Invoice Details:
+${products.map(product => 
+  `- ${product.name}: ${product.quantity} x $${product.price} = $${(product.quantity * product.price).toFixed(2)}`
+).join('\n')}
+
+Total Amount: $${calculateTotal()}
+
+Best regards,
+${sellerInfo.firstName} ${sellerInfo.lastName}
+${sellerInfo.companyName}
+    `;
+
+      // Create the mailto link
+      const mailtoLink = `mailto:${clientInfo.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      
+      // Create a temporary link element
+      const link = document.createElement('a');
+      link.href = mailtoLink;
+      
+      // Trigger click event
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+    } catch (error) {
+      console.error('Error sending email:', error);
+      alert('Failed to open email client. Please try again.');
+    }
   };
 
   return (
@@ -335,10 +392,11 @@ const CreateInvoice = () => {
 
               <input
                 type="text"
-                name="walletAddress"
+                name="recipient"
+                id="recipient"
                 placeholder="Client Wallet Address"
                 className="input-field mb-4"
-                onChange={handleClientChange}
+                onChange={handleChange}
               />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <input
@@ -497,10 +555,59 @@ const CreateInvoice = () => {
                 </motion.button>
 
                 <div className="mt-6 p-4 bg-emerald-50 rounded-lg">
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-center mb-4">
                     <span className="text-lg font-semibold text-gray-700">Total Amount:</span>
-                    <span className="text-2xl font-bold text-emerald-600">${calculateTotal()}</span>
+                    <span className="text-2xl font-bold text-emerald-600"
+                    onClick={handleChange}>${calculateTotal()}</span>
                   </div>
+                  
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={handleSubmit}
+                    disabled={loading || !address}
+                    className={`w-full px-6 py-3 flex items-center justify-center gap-2 rounded-lg font-semibold text-white shadow-md transition-all ${
+                      loading || !address
+                        ? 'bg-gray-400 cursor-not-allowed'
+                        : 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 hover:shadow-lg'
+                    }`}
+                  >
+                    {loading ? (
+                      <>
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      <>
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                        Create Invoice
+                      </>
+                    )}
+                  </motion.button>
+
+                  {error && (
+                    <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm">
+                      {error}
+                    </div>
+                  )}
+
+                  {success && (
+                    <div className="mt-4 p-3 bg-green-100 text-green-700 rounded-lg text-sm">
+                      {success}
+                    </div>
+                  )}
                 </div>
               </div>
             </motion.div>
@@ -513,58 +620,132 @@ const CreateInvoice = () => {
             transition={{ delay: 0.4 }}
             className="bg-white p-6 rounded-xl shadow-md sticky top-6 h-fit"
           >
-            <h2 className="text-xl font-semibold mb-6 text-emerald-700">Preview</h2>
-            
-            {/* Seller Preview */}
-            <div className="mb-8">
-              <h3 className="font-semibold text-emerald-600 mb-2">From:</h3>
-              <div className="space-y-1 text-gray-600">
-                <p>{sellerInfo.firstName} {sellerInfo.lastName}</p>
-                <p>{sellerInfo.companyName}</p>
-                <p>TIN: {sellerInfo.tin}</p>
-                <p>{sellerInfo.email}</p>
-                <p>{sellerInfo.city}, {sellerInfo.region}</p>
-                <p>{sellerInfo.country}, {sellerInfo.postalCode}</p>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-semibold text-emerald-700">Preview</h2>
+              <div className="flex gap-2">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleDownloadPDF}
+                  className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-all"
+                >
+                  <svg 
+                    className="w-5 h-5" 
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    stroke="currentColor"
+                  >
+                    <path 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      strokeWidth={2} 
+                      d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" 
+                    />
+                  </svg>
+                  Download PDF
+                </motion.button>
+
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleEmailSend}
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all"
+                  disabled={!clientInfo.email}
+                  title={!clientInfo.email ? "Please enter client's email first" : "Send via email"}
+                >
+                  <svg 
+                    className="w-5 h-5" 
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    stroke="currentColor"
+                  >
+                    <path 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      strokeWidth={2} 
+                      d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" 
+                    />
+                  </svg>
+                  Send via Email
+                </motion.button>
               </div>
             </div>
 
-            {/* Client Preview */}
-            <div>
-              <h3 className="font-semibold text-emerald-600 mb-2">To:</h3>
-              <div className="space-y-1 text-gray-600">
-                <p>{clientInfo.firstName} {clientInfo.lastName}</p>
-                <p>{clientInfo.companyName}</p>
-                <p>TIN: {clientInfo.tin}</p>
-                <p>{clientInfo.email}</p>
-                <p>{clientInfo.city}, {clientInfo.region}</p>
-                <p>{clientInfo.country}, {clientInfo.postalCode}</p>
+            {/* Preview Content - Add id for PDF generation */}
+            <div id="invoice-preview" className="bg-white p-8 rounded-lg">
+              {/* Invoice Header */}
+              <div className="text-center mb-8">
+                <h1 className="text-2xl font-bold text-gray-900 mb-2">INVOICE</h1>
+                <p className="text-gray-600">Date: {new Date().toLocaleDateString()}</p>
               </div>
-            </div>
 
-            {/* Add Products Preview */}
-            <div className="mt-8">
-              <h3 className="font-semibold text-emerald-600 mb-2">Products:</h3>
-              <div className="space-y-4">
-                {products.map((product, index) => (
-                  <div key={index} className="border-b border-gray-100 pb-2">
-                    <div className="flex justify-between">
-                      <span className="font-medium">{product.name || 'Product Name'}</span>
-                      <span className="text-gray-600">${(product.price * product.quantity || 0).toFixed(2)}</span>
-                    </div>
-                    <p className="text-sm text-gray-500">{product.description || 'Description'}</p>
-                    <p className="text-sm text-gray-500">Qty: {product.quantity} × ${product.price || '0.00'}</p>
-                  </div>
-                ))}
-                <div className="pt-4 border-t border-gray-200">
-                  <div className="flex justify-between font-bold">
-                    <span>Total Amount:</span>
-                    <span className="text-emerald-600">${calculateTotal()}</span>
+              {/* Seller Preview */}
+              <div className="mb-8">
+                <h3 className="font-semibold text-emerald-600 mb-2">From:</h3>
+                <div className="space-y-1 text-gray-600">
+                  <p>{sellerInfo.firstName} {sellerInfo.lastName}</p>
+                  <p>{sellerInfo.companyName}</p>
+                  <p>TIN: {sellerInfo.tin}</p>
+                  <p>{sellerInfo.email}</p>
+                  <p>{sellerInfo.city}, {sellerInfo.region}</p>
+                  <p>{sellerInfo.country}, {sellerInfo.postalCode}</p>
+                </div>
+              </div>
+
+              {/* Client Preview */}
+              <div className="mb-8">
+                <h3 className="font-semibold text-emerald-600 mb-2">To:</h3>
+                <div className="space-y-1 text-gray-600">
+                  <p>{clientInfo.firstName} {clientInfo.lastName}</p>
+                  <p>{clientInfo.companyName}</p>
+                  <p>TIN: {clientInfo.tin}</p>
+                  <p>{clientInfo.email}</p>
+                  <p>{clientInfo.city}, {clientInfo.region}</p>
+                  <p>{clientInfo.country}, {clientInfo.postalCode}</p>
+                </div>
+              </div>
+
+              {/* Products Table */}
+              <div className="mt-8">
+                <h3 className="font-semibold text-emerald-600 mb-4">Products:</h3>
+                <table className="w-full mb-4">
+                  <thead className="border-b">
+                    <tr className="text-left">
+                      <th className="py-2">Item</th>
+                      <th className="py-2">Description</th>
+                      <th className="py-2">Qty</th>
+                      <th className="py-2">Price</th>
+                      <th className="py-2 text-right">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {products.map((product, index) => (
+                      <tr key={index} className="border-b">
+                        <td className="py-2">{product.name || 'Product Name'}</td>
+                        <td className="py-2">{product.description || 'Description'}</td>
+                        <td className="py-2">{product.quantity}</td>
+                        <td className="py-2">${product.price || '0.00'}</td>
+                        <td className="py-2 text-right">
+                          ${(product.price * product.quantity || 0).toFixed(2)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+
+                {/* Total Amount */}
+                <div className="flex justify-end border-t pt-4">
+                  <div className="text-right">
+                    <p className="text-lg font-bold">
+                      Total Amount: <span className="text-emerald-600">${calculateTotal()}</span>
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
           </motion.div>
         </div>
+
       </div>
     </div>
   );
