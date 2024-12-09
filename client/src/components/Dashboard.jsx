@@ -36,9 +36,18 @@ const Dashboard = () => {
   function InvoiceRows({ sender, recipient, amount, status, timestamps }) {
     const copyToClipboard = (text) => {
       navigator.clipboard.writeText(text).then(() => {
-        // Optional: Add a toast notification here
         alert('Address copied to clipboard!');
       });
+    };
+
+    const handlePay = async (index) => {
+      try {
+        // Add your payment logic here
+        console.log(`Paying invoice ${index}`);
+      
+      } catch (error) {
+        console.error('Payment failed:', error);
+      }
     };
 
     return (
@@ -61,6 +70,9 @@ const Dashboard = () => {
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Action
                 </th>
               </tr>
             </thead>
@@ -107,11 +119,34 @@ const Dashboard = () => {
                         {status[index] === 0 ? 'Pending' : 'Paid'}
                       </span>
                     </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {status[index] === 0 && (
+                        <button
+                          onClick={() => handlePay(index)}
+                          className="px-4 py-2 bg-emerald-600 text-white text-sm rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-2"
+                        >
+                          <svg 
+                            className="w-4 h-4" 
+                            fill="none" 
+                            viewBox="0 0 24 24" 
+                            stroke="currentColor"
+                          >
+                            <path 
+                              strokeLinecap="round" 
+                              strokeLinejoin="round" 
+                              strokeWidth={2} 
+                              d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" 
+                            />
+                          </svg>
+                          Pay Now
+                        </button>
+                      )}
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="5" className="px-6 py-4 text-center text-sm text-gray-500">
+                  <td colSpan="6" className="px-6 py-4 text-center text-sm text-gray-500">
                     No invoices found
                   </td>
                 </tr>
