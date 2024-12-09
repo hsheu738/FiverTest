@@ -19,10 +19,9 @@ const CreateInvoice = () => {
  const [success, setSuccess] = useState('');
 
  const handleChange = (e) => {
-  const {recipient, value} = e.target
   setFormData({
     ...formData,
-    recipient:[value]
+    [e.target.name]: e.target.value
   })
  }
 
@@ -34,7 +33,8 @@ const CreateInvoice = () => {
 
   try{
    
-    const { recipient, amount} = formData;
+    const { recipient } = formData;
+    const amount = products.reduce((total, product) => total + (Number(product.price) * Number(product.quantity) || 0), 0);
 
     console.log(recipient, amount);
 
