@@ -147,13 +147,6 @@ const Home = () => {
                 >
                   Get Started
                 </motion.a>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-8 py-4 border-2 border-emerald-600 text-emerald-700 rounded-lg font-semibold hover:bg-emerald-50 transition-all shadow-md hover:shadow-lg"
-                >
-                  Watch Demo
-                </motion.button>
               </motion.div>
             </motion.div>
 
@@ -244,12 +237,12 @@ const Home = () => {
                       transition={{ delay: index * 0.2 }}
                       className="relative"
                     >
-                      <div className="bg-white rounded-2xl p-6 shadow-lg border border-emerald-100">
+                      <div className="bg-white rounded-2xl p-6 shadow-lg border border-emerald-100 h-full flex flex-col min-h-[200px]">
                         <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center mb-4">
                           {step.icon}
                         </div>
                         <h3 className="text-xl font-semibold mb-2">{step.title}</h3>
-                        <p className="text-gray-600">{step.description}</p>
+                        <p className="text-gray-600 flex-grow">{step.description}</p>
                       </div>
                       {index < processSteps.length - 1 && (
                         <div className="hidden md:block absolute top-1/2 right-0 transform translate-x-1/2 -translate-y-1/2">
