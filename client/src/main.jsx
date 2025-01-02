@@ -11,7 +11,7 @@ import '@rainbow-me/rainbowkit/styles.css';
 // Configure for BSC Testnet
 const config = getDefaultConfig({
   appName: 'InvoiceFlow',
-  projectId: 'e7fa7d19fd057ecd9403a0e89bd62b8b', // Your project ID
+  projectId: 'b55a3e21dc42937991c5123db26a275a', // Your project ID
   chains: [bscTestnet],
   ssr: false
 });
